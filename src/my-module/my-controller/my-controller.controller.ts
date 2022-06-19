@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   ForbiddenException,
   Get,
   Header,
@@ -8,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   Redirect,
@@ -142,5 +144,17 @@ export class MyControllerController {
   @UseFilters(HttpExceptionFilter)
   getWithExceptionFilter() {
     throw new ForbiddenException();
+  }
+
+  @Get('builtin-pipe/:id')
+  getWithBuiltinPipe(@Param('id', ParseIntPipe) id: number): string {
+    return `Type of id is ${typeof id}`;
+  }
+
+  @Get('default-value')
+  getWithDefaultValue(
+    @Query('param', new DefaultValuePipe(0), ParseIntPipe) param: number,
+  ): string {
+    return `Provided value is ${param}`;
   }
 }
