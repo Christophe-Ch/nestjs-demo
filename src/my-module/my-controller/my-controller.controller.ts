@@ -1,19 +1,24 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Header,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
   Redirect,
+  UseFilters,
 } from '@nestjs/common';
 import { IsArray, IsNotEmpty, Max, Min } from 'class-validator';
 import {
   Entity,
   MyServiceService,
 } from 'src/my-module/my-service/my-service.service';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 class MyDto {
   @IsNotEmpty()
@@ -25,6 +30,12 @@ class MyDto {
 
   @IsArray()
   grades: number[];
+}
+
+class CustomException extends HttpException {
+  constructor() {
+    super('Unauthorized', HttpStatus.UNAUTHORIZED);
+  }
 }
 
 @Controller('my-controller')
@@ -104,5 +115,32 @@ export class MyControllerController {
   @Get('middleware')
   getWithMiddleware(): string {
     return 'This route triggered a middleware';
+  }
+
+  @Get('standard-exception')
+  getWithStandardException(): string {
+    throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+  }
+
+  @Get('custom-standard-exception')
+  getWithCustomStandardException(): string {
+    throw new HttpException(
+      {
+        status: HttpStatus.FORBIDDEN,
+        error: 'Access forbidden',
+      },
+      HttpStatus.FORBIDDEN,
+    );
+  }
+
+  @Get('custom-exception')
+  getWithCustomException() {
+    throw new CustomException();
+  }
+
+  @Get('exception-filter')
+  @UseFilters(HttpExceptionFilter)
+  getWithExceptionFilter() {
+    throw new ForbiddenException();
   }
 }
