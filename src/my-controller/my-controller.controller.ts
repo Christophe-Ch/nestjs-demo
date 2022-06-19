@@ -10,6 +10,7 @@ import {
   Redirect,
 } from '@nestjs/common';
 import { IsArray, IsNotEmpty, Max, Min } from 'class-validator';
+import { Entity, MyServiceService } from 'src/my-service/my-service.service';
 
 class MyDto {
   @IsNotEmpty()
@@ -25,6 +26,8 @@ class MyDto {
 
 @Controller('my-controller')
 export class MyControllerController {
+  constructor(private myServiceService: MyServiceService) {}
+
   @Get()
   get(): string {
     return 'GET on root';
@@ -88,5 +91,10 @@ export class MyControllerController {
   @Post('dto')
   postUsingDto(@Body() myDto: MyDto): MyDto {
     return myDto;
+  }
+
+  @Get('entities')
+  getAllEntities(): Entity[] {
+    return this.myServiceService.findAll();
   }
 }
