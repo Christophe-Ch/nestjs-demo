@@ -10,7 +10,10 @@ import {
   Redirect,
 } from '@nestjs/common';
 import { IsArray, IsNotEmpty, Max, Min } from 'class-validator';
-import { Entity, MyServiceService } from 'src/my-service/my-service.service';
+import {
+  Entity,
+  MyServiceService,
+} from 'src/my-module/my-service/my-service.service';
 
 class MyDto {
   @IsNotEmpty()
