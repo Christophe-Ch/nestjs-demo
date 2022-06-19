@@ -100,4 +100,9 @@ export class MyControllerController {
   getAllEntities(): Entity[] {
     return this.myServiceService.findAll();
   }
+
+  @Get('middleware')
+  getWithMiddleware(): string {
+    return 'This route triggered a middleware';
+  }
 }
